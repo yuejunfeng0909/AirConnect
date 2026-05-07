@@ -1,3 +1,7 @@
+1.10.0
+ - add option to set flac blocksize 
+ - transferMode.dlna.org always set to "streaming"
+
 1.9.3
  - Windows' static version was missing/incorrect (SSL_STATIC LIB vs SSL_LIB_STATIC)
  

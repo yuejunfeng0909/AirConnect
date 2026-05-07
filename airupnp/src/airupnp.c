@@ -64,18 +64,18 @@ log_level	util_loglevel = lWARN;
 log_level	upnp_loglevel = lINFO;
 
 tMRConfig			glMRConfig = {
-							-1,      	// HTTPLength
-							true,		// Enabled
-							"",      	// Name
-							1,			// UPnPMax
-							true,		// SendMetaData
-							false,		// SendCoverArt
-							true,		// Flush
-							100,		// MaxVolume
-							"flac",	    // Codec
-							true,		// Metadata
-							"",			// RTP:HTTP Latency (0 = use AirPlay requested)
-							false,		// drift
+							-1,       	 // HTTPLength
+							true,		 // Enabled
+							"",      	 // Name
+							1,			 // UPnPMax
+							true,		 // SendMetaData
+							false,		 // SendCoverArt
+							true,		 // Flush
+							100,		 // MaxVolume
+							"flac",      // Codec
+							true,		 // Metadata
+							"",			 // RTP:HTTP Latency (0 = use AirPlay requested)
+							false,		 // drift
 							{0, 0, 0, 0, 0, 0 }, // MAC
 							"",			// artwork
 					};
@@ -313,8 +313,8 @@ void HandleRAOP(void *owner, raopsr_event_t event, ...) {
 					LOG_INFO("[%p]: Sonos live stream", Device);
 				}
 
-				char codec[16] = "flac";
-				(void) !sscanf(Device->Config.Codec, "%15[^:]", codec);
+				char codec[32] = "flac";
+				(void) !sscanf(Device->Config.Codec, "%31[^:]", codec);
 				(void) !asprintf(&uri, "%shttp://%s:%u/stream-%u.%s", mp3radio, inet_ntoa(glHost), port, count++, codec);
 
 				LOG_INFO("[%p]: uPNP setURI %s (cookie %p)", Device, uri, Device->seqN);
@@ -380,14 +380,12 @@ void HandleRAOP(void *owner, raopsr_event_t event, ...) {
 /*----------------------------------------------------------------------------*/
 void HandleHTTP(void *owner, struct key_data_s *headers, struct key_data_s *response) {
 	struct sMR *Device = (struct sMR*) owner;
-	char *p;
+	char* p;
 
 	if (kd_lookup(headers, "getcontentFeatures.dlna.org") && (p = strcasestr(Device->ProtocolInfo, "DLNA.ORG")) != NULL) {
 		kd_add(response, "contentFeatures.dlna.org", p);
 	}
-	if ((p = kd_lookup(headers, "transferMode.dlna.org")) != NULL) {
-		kd_add(response, "transferMode.dlna.org", p);
-	}
+	kd_add(headers, "transferMode.dlna.org", "Streaming");
 }
 
 /*----------------------------------------------------------------------------*/

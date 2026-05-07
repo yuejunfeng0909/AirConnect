@@ -217,8 +217,8 @@ static void raop_cb(void *owner, raopsr_event_t event, ...) {
 				else ContentType = "audio/flac";
 
 				// get codec extension only and format uri
-				char codec[16] = "flac";
-				(void) !sscanf(Device->Config.Codec, "%15[^:]", codec);
+				char codec[32] = "flac";
+				(void) !sscanf(Device->Config.Codec, "%31[^:]", codec);
 				(void) !asprintf(&uri, "http://%s:%u/stream-%u.%s", inet_ntoa(glHost), port, count++, codec);
 
 				CastLoad(Device->CastCtx, uri, ContentType, Device->Name, &MetaData, 0);
