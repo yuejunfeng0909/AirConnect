@@ -1,3 +1,6 @@
+1.10.1
+ - update cli help and README
+ 
 1.10.0
  - add option to set flac blocksize 
  - transferMode.dlna.org always set to "streaming"

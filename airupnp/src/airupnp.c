@@ -140,7 +140,7 @@ static char usage[] =
 		   "Usage: [options]\n"
 		   "  -b <ip|iface>[:<port>] network interface or interface and UPnP port to use\n"
 		   "  -a <port>[:<count>]    set inbound port and range for RTP and HTTP\n"
-		   "  -c <mp3[:<rate>]|flac[:0..9]|wav|pcm>  audio format send to player\n"
+		   "  -c <mp3[:<rate>]|aac[:<rate>]|flac[:0..9][/1152...16384]|wav|pcm>  audio format send to player\n"
 		   "  -g <-3|-1|0>           HTTP content-length mode (-3:chunked, -1:none, 0:fixed)\n"
 		   "  -u <version>           set the maximum UPnP version for search (default 1)\n"
 		   "  -x <config file>       read config from file (default is ./config.xml)\n"

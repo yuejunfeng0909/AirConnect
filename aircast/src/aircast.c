@@ -98,7 +98,7 @@ static char usage[] =
 		   "Usage: [options]\n"
 		   "  -b <ip|iface>network  address or interface to bind to\n"
 		   "  -a <port>[:<count>]   set inbound port and range for RTP and HTTP\n"
-		   "  -c <mp3[:<rate>]|aac[:<rate>]|flac[:0..9]|wav>\taudio format send to player\n"
+		   "  -c <mp3[:<rate>]|aac[:<rate>]|flac[:0..9][/1152...16384]|wav>\taudio format send to player\n"
    		   "  -v <0..1>             group MediaVolume factor\n"
 		   "  -x <config file>      read config from file (default is ./config.xml)\n"
 		   "  -i <config file>      discover players, save <config file> and exit\n"
