@@ -92,6 +92,19 @@ static pthread_mutex_t		glMainMutex;
 static uint32_t				glNetmask;
 static char*				glNameFormat = "%s+";
 
+static double AirPlayVolumeToCastVolume(double VolumeDB) {
+	double Volume = pow(10.0, VolumeDB / 20.0);
+
+	if (Volume < 0.0) Volume = 0.0;
+	if (Volume > 1.0) Volume = 1.0;
+
+	return Volume;
+}
+
+static double CastVolumeToAirPlayVolume(double Volume) {
+	return 20.0 * log10(Volume);
+}
+
 static char usage[] =
 			VERSION "\n"
 		   "See -t for license terms\n"
@@ -236,10 +249,11 @@ static void raop_cb(void *owner, raopsr_event_t event, ...) {
 			uint32_t now = gettime_ms();
 
 			if (now > Device->VolumeStampRx + 1000) {
-				Device->Volume = va_arg(args, double);
+				double AirPlayVolume = va_arg(args, double);
+				Device->Volume = AirPlayVolumeToCastVolume(AirPlayVolume);
 				Device->VolumeStampTx = now;
 				CastSetDeviceVolume(Device->CastCtx, Device->Volume, false);
-				LOG_INFO("[%p]: Volume[0..1] %0.4lf", Device, Device->Volume);
+				LOG_INFO("[%p]: Volume AirPlay[dB] %0.4lf Cast[0..1] %0.4lf", Device, AirPlayVolume, Device->Volume);
 			}
 			break;
 		}
@@ -333,10 +347,11 @@ static void *MRThread(void *args) {
 
 			// now apply the volume change if any
 			if (Volume != -1 && fabs(Volume - p->Volume) >= 0.01 && now > p->VolumeStampTx + 1000) {
+				double AirPlayVolume = CastVolumeToAirPlayVolume(Volume);
 				p->VolumeStampRx = now;
-				p->VolumeStampRx = now;
-				LOG_INFO("[%p]: Volume local change %0.4lf", p, Volume);
-				raopsr_notify(p->Raop, RAOP_VOLUME, &Volume);
+				p->Volume = Volume;
+				LOG_INFO("[%p]: Volume local change Cast[0..1] %0.4lf AirPlay[dB] %0.4lf", p, Volume, AirPlayVolume);
+				raopsr_notify(p->Raop, RAOP_VOLUME, &AirPlayVolume);
 				Volume = -1;
 			}
 
@@ -1065,7 +1080,5 @@ int main(int argc, char *argv[]) {
 
 	return true;
 }
-
-
 
 
